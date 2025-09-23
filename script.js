@@ -382,15 +382,22 @@ window.navigateToPage = function(pageId) {
     // Hide all pages
     const pages = document.querySelectorAll('.page-section');
     pages.forEach(page => {
-        page.style.display = 'none';
+        page.style.display = 'none !important';
     });
     
     // Show the target page
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
-        targetPage.style.display = 'block';
+        targetPage.style.display = 'block !important';
         window.scrollTo(0, 0);
+        console.log('Successfully navigated to:', pageId);
     } else {
         console.error('Page not found:', pageId);
     }
+};
+
+// Test function to verify the logo button works
+window.testLogoClick = function() {
+    console.log('Logo clicked!');
+    navigateToPage('page-home');
 };
