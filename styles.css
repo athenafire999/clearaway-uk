@@ -1,0 +1,42 @@
+/* Custom styles for ClearAway UK website */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
+
+.county-group .county-shape {
+  transition: fill 0.2s ease-in-out;
+  stroke: #065f46; /* emerald-800 */
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.county-group:hover .county-shape {
+  fill: #6ee7b7; /* emerald-300 */
+}
+
+.county-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  fill: #1f2937; /* gray-800 */
+  text-anchor: middle;
+  pointer-events: none;
+  text-shadow: 0 0 4px white, 0 0 4px white, 0 0 4px white;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClearAway UK | Waste Quote for South East and London</title>
+    <meta name="description" content="Get a fast, free quote for waste and rubbish removal in the south east and london. Upload a photo to get your estimate from ClearAway UK." />
+    <meta name="keywords" content="waste removal London, rubbish collection South East, junk disposal, waste quote, man and van, house clearance, garden waste removal" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+  <body class="bg-slate-50">
+    <div id="root" class="min-h-screen flex flex-col font-sans text-gray-800">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <button id="nav-home" class="flex items-center space-x-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-1 -ml-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span class="text-2xl font-bold text-gray-900 tracking-tight">
+                    ClearAway <span class="text-emerald-600">UK</span>
+                  </span>
+                </button>
+                <nav class="flex items-center space-x-2">
+                    <button id="nav-services" class="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg px-3 py-2" onclick="navigateToPage('page-services')">
+                        Services
+                    </button>
+                    <button id="nav-how-we-work" class="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg px-3 py-2" onclick="navigateToPage('page-how-we-work')">
+                        How We Work
+                    </button>
+                    <button id="nav-service-area" class="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg px-3 py-2" onclick="navigateToPage('page-service-area')">
+                        Service Area
+                    </button>
+                    <button id="nav-contact" class="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg px-3 py-2" onclick="navigateToPage('page-contact')">
+                        Contact Us
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-12 md:py-20">
+            <!-- Home Page -->
+            <section id="page-home" class="page-section active">
+                <div class="max-w-4xl mx-auto">
+                    <div id="hero-section" class="text-center py-8">
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+                            <span class="bg-gradient-to-r from-emerald-500 to-green-500 bg-clip-text text-transparent">Domestic &amp; Commercial </span> Waste Removal
+                        </h1>
+                        <h2 class="mt-2 text-2xl md:text-3xl font-bold text-emerald-600">
+                            SOUTHEAST AND LONDON
+                        </h2>
+                        <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                            No more waiting. Just upload a photo of your rubbish, add a few details, and our team will send an estimated quote for you within an hour.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-xl border border-gray-100 mt-8">
+                        <!-- Quote Form -->
+                        <div id="quote-form-container">
+                            <form id="quote-form" class="space-y-6">
+                                <div>
+                                    <h2 class="text-3xl font-bold text-gray-900">Get Your Free Quote</h2>
+                                    <p class="text-gray-600 mt-1">Fill in your details below to get started.</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <input type="text" id="name" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" placeholder="John Doe" />
+                                    </div>
+                                    <div>
+                                    <label for="postcode" class="block text-sm font-medium text-gray-700 mb-1">Postcode *</label>
+                                    <input type="text" id="postcode" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" placeholder="e.g., SW1A 0AA" required />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">Email or Phone Number *</label>
+                                    <input type="text" id="contact" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" placeholder="john.doe@example.com or 07123456789" required />
+                                </div>
+
+                                <div>
+                                    <label for="details" class="block text-sm font-medium text-gray-700 mb-1">Waste Details *</label>
+                                    <textarea id="details" rows="4" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" placeholder="e.g., Old sofa, bags of garden cuttings, and some broken bits of wood from a shed." required></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Photos of Waste *</label>
+                                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg group hover:border-emerald-500 transition-colors">
+                                        <div class="space-y-1 text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                            </svg>
+                                            <div class="flex text-sm text-gray-600">
+                                            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload files</span>
+                                                <input id="file-upload" name="file-upload" type="file" class="sr-only" accept="image/png, image/jpeg, image/webp" required multiple />
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-gray-500">PNG, JPG, WEBP up to 4MB each</p>
+                                        </div>
+                                    </div>
+                                    <div id="image-preview-list" class="mt-4 space-y-2"></div>
+                                </div>
+                                
+                                <p id="form-error" class="hidden text-sm text-red-600 bg-red-100 p-3 rounded-lg border border-red-200"></p>
+
+                                <div>
+                                    <button id="submit-button" type="submit" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed">
+                                        Get My Quote
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Quote Result -->
+                        <div id="quote-result-container" class="hidden">
+                           <div class="animate-fade-in text-center py-8">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                              </svg>
+                              <h2 class="mt-4 text-3xl font-extrabold text-gray-900">Thank You! Your Details Have Been Sent.</h2>
+                              <p class="mt-2 text-gray-600 max-w-xl mx-auto">
+                                Our team has received your information. We will review it and send you a quote within the hour.
+                              </p>
+
+                              <div id="submitted-data-summary" class="mt-8 text-left bg-gray-50 p-6 rounded-lg border max-w-lg mx-auto space-y-2">
+                                <!-- Summary will be injected here -->
+                              </div>
+
+                              <div class="mt-8">
+                                  <button id="reset-button" class="text-sm text-gray-600 hover:text-emerald-700 font-medium">
+                                    Start a New Quote
+                                  </button>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Page -->
+            <section id="page-services" class="page-section" style="display: none !important;">
+                <div class="animate-fade-in max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900">Domestic & Commercial Rubbish Removal</h1>
+                        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Professional waste removal services across Bracknell and surrounding areas</p>
+                    </div>
+
+                    <div class="mt-12 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
+                        <div class="prose prose-lg max-w-none">
+                            <div class="text-center mb-8">
+                                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full mb-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-3xl font-bold text-gray-900 mb-4">Rubbish on the Go</h2>
+                                <p class="text-xl text-emerald-600 font-semibold">House Clearance & Waste Removal Company</p>
+                                <p class="text-lg text-gray-600 mt-2">Based in Bracknell</p>
+                            </div>
+
+                            <div class="space-y-6 text-gray-700 leading-relaxed">
+                                <p class="text-lg">
+                                    We remove most types of waste & rubbish from both <strong class="text-emerald-600">domestic</strong> and <strong class="text-emerald-600">commercial</strong> property quickly and cost effectively. Priding ourselves on being efficient, reliable and professional. We can provide a waste disposal service that is <strong class="text-emerald-600">environmentally friendly</strong>.
+                                </p>
+
+                                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-200">
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Simple Pricing Structure
+                                    </h3>
+                                    <p class="text-lg">
+                                        We have a simple pricing structure to make it easy to gauge how much rubbish you need removing so you only pay for the waste we clear. <strong class="text-emerald-600">All labour and disposal costs are always included</strong> in the price you are quoted.
+                                    </p>
+                                </div>
+
+                                <div class="bg-gray-50 p-6 rounded-xl">
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Service Areas
+                                    </h3>
+                                    <p class="text-lg">
+                                        Contact us today for reliable rubbish removal services in <strong class="text-emerald-600">Bracknell</strong> and surrounding areas.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 text-center">
+                                <a href="tel:07300316670" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-full hover:from-emerald-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                    Call Now: 07300316670
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How We Work Page -->
+            <section id="page-how-we-work" class="page-section">
+                <div class="animate-fade-in max-w-6xl mx-auto">
+                    <div class="text-center">
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900">How We Work</h1>
+                        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Our simple 3-step process makes waste removal quick and hassle-free. Here's exactly how we work:</p>
+                    </div>
+                    
+                    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                        <!-- Step 1 -->
+                        <div class="text-center group">
+                            <div class="relative mb-8">
+                                <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                                    <span class="text-3xl font-bold text-white">1</span>
+                                </div>
+                                <div class="absolute -top-2 -right-2 w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Take Photos & Send Details</h3>
+                            <p class="text-gray-600 leading-relaxed">Simply take clear photos of your waste and fill out our quick form with your contact details and description. Upload as many photos as you need to show us exactly what needs removing.</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="text-center group">
+                            <div class="relative mb-8">
+                                <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                                    <span class="text-3xl font-bold text-white">2</span>
+                                </div>
+                                <div class="absolute -top-2 -right-2 w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Receive Your Quote</h3>
+                            <p class="text-gray-600 leading-relaxed">Within an hour, our team will review your photos and send you a detailed quote via email or phone. No hidden fees, no surprises - just a fair price for the work involved.</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="text-center group">
+                            <div class="relative mb-8">
+                                <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                                    <span class="text-3xl font-bold text-white">3</span>
+                                </div>
+                                <div class="absolute -top-2 -right-2 w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">We Come & Remove</h3>
+                            <p class="text-gray-600 leading-relaxed">If you're happy with the quote, we'll arrange a convenient time and day that works for you. Our professional team will arrive on time and remove all your waste quickly and efficiently.</p>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mt-20 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
+                        <div class="text-center mb-12">
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose ClearAway UK?</h2>
+                            <p class="text-lg text-gray-600 max-w-3xl mx-auto">We make waste removal simple, transparent, and reliable for residents across South East and London.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div class="text-center">
+                                <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Quick Quotes</h3>
+                                <p class="text-sm text-gray-600">Get your quote within an hour of submitting your request</p>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Fully Insured</h3>
+                                <p class="text-sm text-gray-600">Comprehensive insurance coverage for your peace of mind</p>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Local Service</h3>
+                                <p class="text-sm text-gray-600">Serving South East and London with local knowledge</p>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Eco-Friendly</h3>
+                                <p class="text-sm text-gray-600">Responsible disposal and recycling whenever possible</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 text-center">
+                            <a href="#page-home" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-lg shadow-lg hover:from-emerald-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all transform hover:scale-105">
+                                Get Your Quote Now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Area Page -->
+            <section id="page-service-area" class="page-section">
+                <div class="animate-fade-in max-w-7xl mx-auto">
+                    <div class="text-center">
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900">Our Service Area</h1>
+                        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">We proudly offer waste collection services across south east and london. Click on a county on the map or in the list below to see the areas we cover.</p>
+                    </div>
+                    
+                    <div class="mt-12 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 max-w-xl">
+                            <svg id="service-area-map" viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg" aria-label="An interactive map showing the service areas of ClearAway UK, including London, Surrey, Hampshire, Berkshire, and Buckinghamshire." style="width: 100%; height: auto; cursor: pointer;" onclick="handleMapClick(event)">
+                                <g transform="translate(-40, 0)">
+                                    <g data-county="Buckinghamshire" class="county-group cursor-pointer" onclick="toggleCounty('Buckinghamshire')" style="cursor: pointer;">
+                                        <path d="M130,15 L142,80 L150,135 L240,110 L220,20 Z" class="county-shape fill-emerald-200" style="pointer-events: all; fill: #6ee7b7;" />
+                                        <text x="185" y="75" class="county-label text-lg" style="pointer-events: none; font-size: 12px; fill: #1f2937;">BUCKINGHAMSHIRE</text>
+                                    </g>
+                                    <g data-county="Berkshire" class="county-group cursor-pointer" onclick="toggleCounty('Berkshire')" style="cursor: pointer;">
+                                        <path d="M55,145 L150,135 L240,110 L250,170 L170,185 L90,180 Z" class="county-shape fill-emerald-200" style="pointer-events: all; fill: #6ee7b7;" />
+                                        <text x="160" y="155" class="county-label text-lg" style="pointer-events: none; font-size: 12px; fill: #1f2937;">BERKSHIRE</text>
+                                    </g>
+                                    <g data-county="Greater London" class="county-group cursor-pointer" onclick="toggleCounty('Greater London')" style="cursor: pointer;">
+                                        <path d="M240,110 L380,115 L360,170 L250,170 Z" class="county-shape fill-emerald-200" style="pointer-events: all; fill: #6ee7b7;" />
+                                        <text x="310" y="145" class="county-label text-lg" style="pointer-events: none; font-size: 12px; fill: #1f2937;">LONDON</text>
+                                    </g>
+                                    <g data-county="Surrey" class="county-group cursor-pointer" onclick="toggleCounty('Surrey')" style="cursor: pointer;">
+                                        <path d="M170,185 L250,170 L360,170 L330,240 L220,230 Z" class="county-shape fill-emerald-200" style="pointer-events: all; fill: #6ee7b7;" />
+                                        <text x="270" y="205" class="county-label text-lg" style="pointer-events: none; font-size: 12px; fill: #1f2937;">SURREY</text>
+                                    </g>
+                                    <g data-county="Hampshire" class="county-group cursor-pointer" onclick="toggleCounty('Hampshire')" style="cursor: pointer;">
+                                        <path d="M90,180 L170,185 L220,230 L160,320 L20,280 L45,190 Z" class="county-shape fill-emerald-200" style="pointer-events: all; fill: #6ee7b7;" />
+                                        <text x="120" y="250" class="county-label text-lg" style="pointer-events: none; font-size: 12px; fill: #1f2937;">HAMPSHIRE</text>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <div id="service-area-list" class="w-full md:w-1/2 max-w-lg">
+                           <!-- List generated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Page -->
+            <section id="page-contact" class="page-section">
+                <div class="animate-fade-in max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900">Get in Touch</h1>
+                        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Have questions or ready to book your waste collection? Contact us directly through any of the methods below. We're here to help!</p>
+                    </div>
+                    <div class="mt-12 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                             <div class="flex flex-col items-center p-4">
+                                <div class="flex-shrink-0 bg-emerald-600 rounded-full p-4 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900">Phone Number</h3>
+                                <a href="tel:07300316670" class="mt-1 text-md text-emerald-700 font-semibold hover:text-emerald-800 hover:underline break-all">07300316670</a>
+                            </div>
+                            <div class="flex flex-col items-center p-4">
+                                <div class="flex-shrink-0 bg-emerald-600 rounded-full p-4 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900">Email Address</h3>
+                                <a href="mailto:sales@clear-away.co.uk" class="mt-1 text-md text-emerald-700 font-semibold hover:text-emerald-800 hover:underline break-all">sales@clear-away.co.uk</a>
+                            </div>
+                            <div class="flex flex-col items-center p-4">
+                                <div class="flex-shrink-0 bg-emerald-600 rounded-full p-4 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900">Our Location</h3>
+                                <p class="mt-1 text-md text-gray-700">Bracknell, Berkshire</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-gray-400 mt-auto">
+          <div class="container mx-auto px-4 py-8 text-center">
+            <p>&copy; 2024 ClearAway UK. All rights reserved.</p>
+            <p class="text-sm mt-1">Efficient Quotations for a Cleaner Tomorrow.</p>
+            <p class="text-xs mt-2 font-semibold">Proudly serving south east and london.</p>
+          </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
