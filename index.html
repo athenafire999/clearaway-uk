@@ -31,16 +31,17 @@
         <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
             <div class="container mx-auto px-4 py-4 flex items-center justify-between">
                 <!-- ClearAway Logo - Left Side -->
-                <button id="nav-home" class="flex items-center space-x-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-1 -ml-1" onclick="navigateToPage('page-home'); console.log('Logo button clicked!');">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <button id="nav-home" class="flex items-center space-x-2 md:space-x-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-1 -ml-1" onclick="navigateToPage('page-home'); console.log('Logo button clicked!');">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span class="text-2xl font-bold text-gray-900 tracking-tight">
+                    <span class="text-lg md:text-2xl font-bold text-gray-900 tracking-tight">
                         ClearAway <span class="text-emerald-600">UK</span>
                     </span>
                 </button>
                 
-                <nav class="flex items-center space-x-2">
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-2">
                     <button id="nav-services" class="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg px-3 py-2" onclick="navigateToPage('page-services')">
                         Services
                     </button>
@@ -54,6 +55,42 @@
                         Contact Us
                     </button>
                 </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-gray-700 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg">
+                    <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg">
+                <div class="px-4 py-2 space-y-1">
+                    <button id="mobile-nav-home" class="w-full text-left px-4 py-3 text-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500" onclick="navigateToPage('page-home'); toggleMobileMenu();">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <span>Home</span>
+                        </div>
+                    </button>
+                    <button id="mobile-nav-services" class="w-full text-left px-4 py-3 text-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500" onclick="navigateToPage('page-services'); toggleMobileMenu();">
+                        Services
+                    </button>
+                    <button id="mobile-nav-how-we-work" class="w-full text-left px-4 py-3 text-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500" onclick="navigateToPage('page-how-we-work'); toggleMobileMenu();">
+                        How We Work
+                    </button>
+                    <button id="mobile-nav-service-area" class="w-full text-left px-4 py-3 text-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500" onclick="navigateToPage('page-service-area'); toggleMobileMenu();">
+                        Service Area
+                    </button>
+                    <button id="mobile-nav-contact" class="w-full text-left px-4 py-3 text-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500" onclick="navigateToPage('page-contact'); toggleMobileMenu();">
+                        Contact Us
+                    </button>
+                </div>
             </div>
         </header>
 

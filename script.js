@@ -409,3 +409,30 @@ window.testLogoClick = function() {
     console.log('Logo clicked!');
     navigateToPage('page-home');
 };
+
+// Mobile menu toggle function
+window.toggleMobileMenu = function() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    if (mobileMenu.classList.contains('hidden')) {
+        // Show menu
+        mobileMenu.classList.remove('hidden');
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+    } else {
+        // Hide menu
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+    }
+};
+
+// Initialize mobile menu
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+    }
+});
