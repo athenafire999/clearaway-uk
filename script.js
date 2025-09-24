@@ -268,22 +268,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
                 'No images uploaded');
             
-            // Add HTML images if any
+            // Add detailed image information
             if (uploadedImages.length > 0) {
-                let htmlContent = '<h3>Uploaded Images:</h3>';
+                let imageDetails = '=== UPLOADED IMAGES ===\n\n';
                 uploadedImages.forEach((img, index) => {
-                    htmlContent += `
-                        <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                            <h4>Image ${index + 1}: ${img.name}</h4>
-                            <img src="data:${img.mimeType};base64,${img.base64}" 
-                                 style="max-width: 300px; max-height: 300px; border: 1px solid #ccc;" 
-                                 alt="${img.name}" />
-                            <p><strong>File:</strong> ${img.name}</p>
-                            <p><strong>Size:</strong> ${Math.round(img.base64.length * 0.75 / 1024)}KB</p>
-                        </div>
-                    `;
+                    imageDetails += `Image ${index + 1}:\n`;
+                    imageDetails += `- Filename: ${img.name}\n`;
+                    imageDetails += `- Type: ${img.mimeType}\n`;
+                    imageDetails += `- Size: ${Math.round(img.base64.length * 0.75 / 1024)}KB\n`;
+                    imageDetails += `- Base64 Data: data:${img.mimeType};base64,${img.base64.substring(0, 100)}...\n\n`;
                 });
-                formData.append('images_html', htmlContent);
+                formData.append('image_details', imageDetails);
             }
             
             // Submit to Formspree
