@@ -243,28 +243,70 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit the form to Formspree
+            // Submit the form to Formspree using fetch
             console.log('Submitting form to Formspree...');
             
-            // Create a new form element to ensure proper submission
-            const submitForm = document.createElement('form');
-            submitForm.action = 'https://formspree.io/f/xgvnegba';
-            submitForm.method = 'POST';
-            submitForm.style.display = 'none';
+            // Create FormData
+            const formData = new FormData();
             
-            // Copy all form data
-            const formData = new FormData(quoteForm);
-            for (let [key, value] of formData.entries()) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                submitForm.appendChild(input);
+            // Add basic fields
+            formData.append('name', name);
+            formData.append('postcode', postcode);
+            formData.append('contact', contact);
+            formData.append('details', details);
+            formData.append('_subject', `New Waste Removal Quote Request - ${name} (${postcode})`);
+            formData.append('_replyto', contact);
+            
+            // Add image information
+            uploadedImages.forEach((img, index) => {
+                formData.append(`image_${index + 1}_name`, img.name);
+                formData.append(`image_${index + 1}_size`, `${Math.round(img.base64.length * 0.75 / 1024)}KB`);
+            });
+            
+            // Add images summary
+            formData.append('images_summary', uploadedImages.length > 0 ? 
+                `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
+                'No images uploaded');
+            
+            // Add HTML images if any
+            if (uploadedImages.length > 0) {
+                let htmlContent = '<h3>Uploaded Images:</h3>';
+                uploadedImages.forEach((img, index) => {
+                    htmlContent += `
+                        <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <h4>Image ${index + 1}: ${img.name}</h4>
+                            <img src="data:${img.mimeType};base64,${img.base64}" 
+                                 style="max-width: 300px; max-height: 300px; border: 1px solid #ccc;" 
+                                 alt="${img.name}" />
+                            <p><strong>File:</strong> ${img.name}</p>
+                            <p><strong>Size:</strong> ${Math.round(img.base64.length * 0.75 / 1024)}KB</p>
+                        </div>
+                    `;
+                });
+                formData.append('images_html', htmlContent);
             }
             
-            // Add the form to the page and submit
-            document.body.appendChild(submitForm);
-            submitForm.submit();
+            // Submit to Formspree
+            fetch('https://formspree.io/f/xgvnegba', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Form submitted successfully!');
+                console.log('Response status:', response.status);
+                if (response.ok) {
+                    console.log('Formspree accepted the submission');
+                } else {
+                    console.error('Formspree rejected the submission:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+                alert('There was an error submitting the form. Please try again.');
+            });
         }, 1000);
     });
     
