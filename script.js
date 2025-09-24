@@ -163,18 +163,27 @@ document.addEventListener('DOMContentLoaded', () => {
         hideError();
         setSubmitting(true);
 
-        // Create a hidden input for images data
+        // Create a hidden input for images data with better formatting
         const imagesInput = document.createElement('input');
         imagesInput.type = 'hidden';
         imagesInput.name = 'images';
-        imagesInput.value = JSON.stringify(uploadedImages);
+        
+        // Create a more readable format for images
+        const imageSummary = uploadedImages.map((img, index) => 
+            `Image ${index + 1}: ${img.name} (${img.mimeType})`
+        ).join(', ');
+        
+        imagesInput.value = uploadedImages.length > 0 ? 
+            `Images uploaded: ${imageSummary}` : 
+            'No images uploaded';
+            
         quoteForm.appendChild(imagesInput);
         
         // Add a hidden input for the subject
         const subjectInput = document.createElement('input');
         subjectInput.type = 'hidden';
         subjectInput.name = '_subject';
-        subjectInput.value = 'New Waste Removal Quote Request - ClearAway UK';
+        subjectInput.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
         quoteForm.appendChild(subjectInput);
         
         // Add a hidden input for the reply-to email
@@ -183,6 +192,15 @@ document.addEventListener('DOMContentLoaded', () => {
         replyToInput.name = '_replyto';
         replyToInput.value = contact;
         quoteForm.appendChild(replyToInput);
+        
+        // Add a note about images
+        const imageNoteInput = document.createElement('input');
+        imageNoteInput.type = 'hidden';
+        imageNoteInput.name = 'image_note';
+        imageNoteInput.value = uploadedImages.length > 0 ? 
+            'Note: Image files are included as base64 data in this form submission. You can view them in your Formspree dashboard.' : 
+            'No images were uploaded with this request.';
+        quoteForm.appendChild(imageNoteInput);
         
         // Show success message and let form submit naturally
         setTimeout(() => {
