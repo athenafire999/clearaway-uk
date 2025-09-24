@@ -143,33 +143,35 @@ document.addEventListener('DOMContentLoaded', () => {
         hideError();
         setSubmitting(true);
 
-        // Send form data to PHP script on Hostinger
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('postcode', postcode);
-        formData.append('contact', contact);
-        formData.append('details', details);
-        formData.append('images', JSON.stringify(uploadedImages));
+        // Create a hidden input for images data
+        const imagesInput = document.createElement('input');
+        imagesInput.type = 'hidden';
+        imagesInput.name = 'images';
+        imagesInput.value = JSON.stringify(uploadedImages);
+        quoteForm.appendChild(imagesInput);
         
-        try {
-            const response = await fetch('send_email.php', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
-            } else {
-                showError(result.message || 'Failed to send quote request. Please try again.');
-            }
-        } catch (e) {
-            console.error('Form submission error:', e);
-            showError('Sorry, something went wrong while sending your request. Please try again later.');
-        } finally {
+        // Add a hidden input for the subject
+        const subjectInput = document.createElement('input');
+        subjectInput.type = 'hidden';
+        subjectInput.name = '_subject';
+        subjectInput.value = 'New Waste Removal Quote Request - ClearAway UK';
+        quoteForm.appendChild(subjectInput);
+        
+        // Add a hidden input for the reply-to email
+        const replyToInput = document.createElement('input');
+        replyToInput.type = 'hidden';
+        replyToInput.name = '_replyto';
+        replyToInput.value = contact;
+        quoteForm.appendChild(replyToInput);
+        
+        // Show success message and let form submit naturally
+        setTimeout(() => {
+            showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
-        }
+            
+            // Submit the form to Formspree
+            quoteForm.submit();
+        }, 1000);
     });
     
     function setSubmitting(isSubmitting) {
