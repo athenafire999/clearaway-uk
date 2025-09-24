@@ -163,32 +163,22 @@ document.addEventListener('DOMContentLoaded', () => {
         hideError();
         setSubmitting(true);
 
-        // Add images as file inputs for proper attachment handling
+        // Add images as individual fields for better email formatting
         uploadedImages.forEach((img, index) => {
-            // Create a file input for each image
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.name = `image_${index + 1}`;
-            fileInput.style.display = 'none';
+            const imageField = document.createElement('input');
+            imageField.type = 'hidden';
+            imageField.name = `image_${index + 1}_name`;
+            imageField.value = img.name;
+            quoteForm.appendChild(imageField);
             
-            // Convert base64 back to file
-            const byteCharacters = atob(img.base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const file = new File([byteArray], img.name, { type: img.mimeType });
-            
-            // Create a DataTransfer object to set the file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            
-            quoteForm.appendChild(fileInput);
+            const imageSize = document.createElement('input');
+            imageSize.type = 'hidden';
+            imageSize.name = `image_${index + 1}_size`;
+            imageSize.value = `${Math.round(img.base64.length * 0.75 / 1024)}KB`;
+            quoteForm.appendChild(imageSize);
         });
         
-        // Add a summary of uploaded images
+        // Add images summary
         const imagesSummary = document.createElement('input');
         imagesSummary.type = 'hidden';
         imagesSummary.name = 'images_summary';
@@ -196,6 +186,30 @@ document.addEventListener('DOMContentLoaded', () => {
             `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
             'No images uploaded';
         quoteForm.appendChild(imagesSummary);
+        
+        // Add HTML formatted images for email
+        if (uploadedImages.length > 0) {
+            const imagesHtml = document.createElement('input');
+            imagesHtml.type = 'hidden';
+            imagesHtml.name = 'images_html';
+            
+            let htmlContent = '<h3>Uploaded Images:</h3>';
+            uploadedImages.forEach((img, index) => {
+                htmlContent += `
+                    <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <h4>Image ${index + 1}: ${img.name}</h4>
+                        <img src="data:${img.mimeType};base64,${img.base64}" 
+                             style="max-width: 300px; max-height: 300px; border: 1px solid #ccc;" 
+                             alt="${img.name}" />
+                        <p><strong>File:</strong> ${img.name}</p>
+                        <p><strong>Size:</strong> ${Math.round(img.base64.length * 0.75 / 1024)}KB</p>
+                    </div>
+                `;
+            });
+            
+            imagesHtml.value = htmlContent;
+            quoteForm.appendChild(imagesHtml);
+        }
         
         // Add a hidden input for the subject
         const subjectInput = document.createElement('input');
@@ -229,47 +243,28 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit the form to Formspree with proper file handling
+            // Submit the form to Formspree
             console.log('Submitting form to Formspree...');
             
-            // Create FormData for proper file upload
-            const formData = new FormData();
+            // Create a new form element to ensure proper submission
+            const submitForm = document.createElement('form');
+            submitForm.action = 'https://formspree.io/f/xgvnegba';
+            submitForm.method = 'POST';
+            submitForm.style.display = 'none';
             
-            // Add basic form fields
-            formData.append('name', name);
-            formData.append('postcode', postcode);
-            formData.append('contact', contact);
-            formData.append('details', details);
-            formData.append('_subject', `New Waste Removal Quote Request - ${name} (${postcode})`);
-            formData.append('_replyto', contact);
+            // Copy all form data
+            const formData = new FormData(quoteForm);
+            for (let [key, value] of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                submitForm.appendChild(input);
+            }
             
-            // Add images as files
-            uploadedImages.forEach((img, index) => {
-                const byteCharacters = atob(img.base64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const file = new File([byteArray], img.name, { type: img.mimeType });
-                formData.append(`image_${index + 1}`, file);
-            });
-            
-            // Add images summary
-            formData.append('images_summary', uploadedImages.length > 0 ? 
-                `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
-                'No images uploaded');
-            
-            // Submit using fetch to Formspree
-            fetch('https://formspree.io/f/xgvnegba', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                console.log('Form submitted successfully to Formspree');
-                console.log('Response status:', response.status);
-            }).catch(error => {
-                console.error('Error submitting form:', error);
-            });
+            // Add the form to the page and submit
+            document.body.appendChild(submitForm);
+            submitForm.submit();
         }, 1000);
     });
     
