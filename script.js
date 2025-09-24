@@ -141,14 +141,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     quoteForm.addEventListener('submit', async (event) => {
         event.preventDefault();
+        console.log('Form submit event triggered');
+        
         const name = document.getElementById('name').value;
         const postcode = document.getElementById('postcode').value;
         const contact = document.getElementById('contact').value;
         const details = document.getElementById('details').value;
 
-        if (uploadedImages.length === 0 || !details || !postcode || !contact) {
-            showError('Please fill in all required fields and upload at least one photo.');
+        console.log('Form data:', { name, postcode, contact, details, imagesCount: uploadedImages.length });
+
+        if (!name || !postcode || !contact || !details) {
+            showError('Please fill in all required fields (Name, Postcode, Contact, and Details).');
             return;
+        }
+        
+        // Photos are optional, but if none uploaded, show a warning
+        if (uploadedImages.length === 0) {
+            console.log('No photos uploaded, but continuing with form submission');
         }
         
         hideError();
@@ -177,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Show success message and let form submit naturally
         setTimeout(() => {
+            console.log('Showing success screen and submitting form');
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
@@ -442,10 +452,19 @@ window.toggleMobileMenu = function() {
     }
 };
 
-// Initialize mobile menu
-document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    if (mobileMenuButton) {
-        mobileMenuButton.addEventListener('click', toggleMobileMenu);
-    }
-});
+    // Initialize mobile menu
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', toggleMobileMenu);
+        }
+        
+        // Add click event listener to submit button as backup
+        const submitButton = document.getElementById('submit-button');
+        if (submitButton) {
+            submitButton.addEventListener('click', function(e) {
+                console.log('Submit button clicked');
+                // Let the form's submit event handle it
+            });
+        }
+    });
