@@ -163,21 +163,39 @@ document.addEventListener('DOMContentLoaded', () => {
         hideError();
         setSubmitting(true);
 
-        // Create a hidden input for images data with better formatting
-        const imagesInput = document.createElement('input');
-        imagesInput.type = 'hidden';
-        imagesInput.name = 'images';
-        
-        // Create a more readable format for images
-        const imageSummary = uploadedImages.map((img, index) => 
-            `Image ${index + 1}: ${img.name} (${img.mimeType})`
-        ).join(', ');
-        
-        imagesInput.value = uploadedImages.length > 0 ? 
-            `Images uploaded: ${imageSummary}` : 
-            'No images uploaded';
+        // Add images as file inputs for proper attachment handling
+        uploadedImages.forEach((img, index) => {
+            // Create a file input for each image
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = `image_${index + 1}`;
+            fileInput.style.display = 'none';
             
-        quoteForm.appendChild(imagesInput);
+            // Convert base64 back to file
+            const byteCharacters = atob(img.base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const file = new File([byteArray], img.name, { type: img.mimeType });
+            
+            // Create a DataTransfer object to set the file
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            
+            quoteForm.appendChild(fileInput);
+        });
+        
+        // Add a summary of uploaded images
+        const imagesSummary = document.createElement('input');
+        imagesSummary.type = 'hidden';
+        imagesSummary.name = 'images_summary';
+        imagesSummary.value = uploadedImages.length > 0 ? 
+            `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
+            'No images uploaded';
+        quoteForm.appendChild(imagesSummary);
         
         // Add a hidden input for the subject
         const subjectInput = document.createElement('input');
@@ -211,29 +229,47 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit the form to Formspree
+            // Submit the form to Formspree with proper file handling
             console.log('Submitting form to Formspree...');
-            console.log('Form method before submit:', quoteForm.method);
             
-            // Create a new form element to ensure proper submission
-            const submitForm = document.createElement('form');
-            submitForm.action = 'https://formspree.io/f/xgvnegba';
-            submitForm.method = 'POST';
-            submitForm.style.display = 'none';
+            // Create FormData for proper file upload
+            const formData = new FormData();
             
-            // Copy all form data
-            const formData = new FormData(quoteForm);
-            for (let [key, value] of formData.entries()) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                submitForm.appendChild(input);
-            }
+            // Add basic form fields
+            formData.append('name', name);
+            formData.append('postcode', postcode);
+            formData.append('contact', contact);
+            formData.append('details', details);
+            formData.append('_subject', `New Waste Removal Quote Request - ${name} (${postcode})`);
+            formData.append('_replyto', contact);
             
-            // Add the form to the page and submit
-            document.body.appendChild(submitForm);
-            submitForm.submit();
+            // Add images as files
+            uploadedImages.forEach((img, index) => {
+                const byteCharacters = atob(img.base64);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const file = new File([byteArray], img.name, { type: img.mimeType });
+                formData.append(`image_${index + 1}`, file);
+            });
+            
+            // Add images summary
+            formData.append('images_summary', uploadedImages.length > 0 ? 
+                `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
+                'No images uploaded');
+            
+            // Submit using fetch to Formspree
+            fetch('https://formspree.io/f/xgvnegba', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                console.log('Form submitted successfully to Formspree');
+                console.log('Response status:', response.status);
+            }).catch(error => {
+                console.error('Error submitting form:', error);
+            });
         }, 1000);
     });
     
