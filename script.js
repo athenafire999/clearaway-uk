@@ -213,7 +213,27 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Submit the form to Formspree
             console.log('Submitting form to Formspree...');
-            quoteForm.submit();
+            console.log('Form method before submit:', quoteForm.method);
+            
+            // Create a new form element to ensure proper submission
+            const submitForm = document.createElement('form');
+            submitForm.action = 'https://formspree.io/f/xgvnegba';
+            submitForm.method = 'POST';
+            submitForm.style.display = 'none';
+            
+            // Copy all form data
+            const formData = new FormData(quoteForm);
+            for (let [key, value] of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                submitForm.appendChild(input);
+            }
+            
+            // Add the form to the page and submit
+            document.body.appendChild(submitForm);
+            submitForm.submit();
         }, 1000);
     });
     
