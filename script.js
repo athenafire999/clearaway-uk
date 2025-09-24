@@ -187,10 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show success message and let form submit naturally
         setTimeout(() => {
             console.log('Showing success screen and submitting form');
+            console.log('Form action URL:', quoteForm.action);
+            console.log('Form method:', quoteForm.method);
+            
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
             // Submit the form to Formspree
+            console.log('Submitting form to Formspree...');
             quoteForm.submit();
         }, 1000);
     });
