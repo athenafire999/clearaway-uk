@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return; // Skip already added files
             }
 
-            if (file.size > 4 * 1024 * 1024) { // 4MB limit
-                currentErrors.push(`'${file.name}' is too large (max 4MB).`);
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                currentErrors.push(`'${file.name}' is too large (max 10MB).`);
                 return;
             }
 
@@ -85,8 +85,19 @@ document.addEventListener('DOMContentLoaded', () => {
         event.target.value = '';
     });
 
+    function updateUploadButtonText() {
+        const uploadLabel = document.querySelector('label[for="file-upload"] span');
+        if (uploadedImages.length > 0) {
+            uploadLabel.textContent = `${uploadedImages.length} file${uploadedImages.length > 1 ? 's' : ''} selected`;
+        } else {
+            uploadLabel.textContent = 'Upload files';
+        }
+    }
+
     function renderImagePreviews() {
         imagePreviewList.innerHTML = '';
+        updateUploadButtonText(); // Update button text
+        
         if(uploadedImages.length > 0) {
           const header = document.createElement('h3');
           header.className = 'text-sm font-medium text-gray-800';
