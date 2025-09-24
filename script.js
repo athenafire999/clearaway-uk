@@ -379,18 +379,26 @@ document.addEventListener('DOMContentLoaded', () => {
 window.navigateToPage = function(pageId) {
     console.log('Global navigation to:', pageId);
     
-    // Hide all pages
+    // Hide all pages with stronger CSS
     const pages = document.querySelectorAll('.page-section');
+    console.log('Found pages:', pages.length);
+    
     pages.forEach(page => {
-        page.style.display = 'none !important';
+        page.style.setProperty('display', 'none', 'important');
+        page.style.setProperty('visibility', 'hidden', 'important');
+        page.style.setProperty('opacity', '0', 'important');
+        console.log('Hiding page:', page.id);
     });
     
     // Show the target page
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
-        targetPage.style.display = 'block !important';
+        targetPage.style.setProperty('display', 'block', 'important');
+        targetPage.style.setProperty('visibility', 'visible', 'important');
+        targetPage.style.setProperty('opacity', '1', 'important');
         window.scrollTo(0, 0);
         console.log('Successfully navigated to:', pageId);
+        console.log('Target page display:', targetPage.style.display);
     } else {
         console.error('Page not found:', pageId);
     }
