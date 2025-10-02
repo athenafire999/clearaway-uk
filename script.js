@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         imageNoteInput.type = 'hidden';
         imageNoteInput.name = 'image_note';
         imageNoteInput.value = uploadedImages.length > 0 ? 
-            'Note: Image files are included as base64 data in this form submission. You can view them in your Formspree dashboard.' : 
+            'Note: Image files are included as base64 data in this form submission. You can view them in your email.' : 
             'No images were uploaded with this request.';
         quoteForm.appendChild(imageNoteInput);
         
@@ -243,45 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit the form to Formspree using fetch
-            console.log('Submitting form to Formspree...');
-            
-            // Create FormData
-            const formData = new FormData();
-            
-            // Add basic fields
-            formData.append('name', name);
-            formData.append('postcode', postcode);
-            formData.append('contact', contact);
-            formData.append('details', details);
-            formData.append('_subject', `New Waste Removal Quote Request - ${name} (${postcode})`);
-            formData.append('_replyto', contact);
-            
-            // Add image information
-            uploadedImages.forEach((img, index) => {
-                formData.append(`image_${index + 1}_name`, img.name);
-                formData.append(`image_${index + 1}_size`, `${Math.round(img.base64.length * 0.75 / 1024)}KB`);
-            });
-            
-            // Add images summary
-            formData.append('images_summary', uploadedImages.length > 0 ? 
-                `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
-                'No images uploaded');
-            
-            // Add detailed image information
-            if (uploadedImages.length > 0) {
-                let imageDetails = '=== UPLOADED IMAGES ===\n\n';
-                uploadedImages.forEach((img, index) => {
-                    imageDetails += `Image ${index + 1}:\n`;
-                    imageDetails += `- Filename: ${img.name}\n`;
-                    imageDetails += `- Type: ${img.mimeType}\n`;
-                    imageDetails += `- Size: ${Math.round(img.base64.length * 0.75 / 1024)}KB\n`;
-                    imageDetails += `- Base64 Data: data:${img.mimeType};base64,${img.base64.substring(0, 100)}...\n\n`;
-                });
-                formData.append('image_details', imageDetails);
-            }
-            
             // Submit via EmailJS
+            console.log('Submitting form via EmailJS...');
+            
             const formDataForEmailJS = {
                 name: name,
                 postcode: postcode,
@@ -303,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error submitting form:', error);
                     alert('There was an error submitting the form. Please try again.');
                 });
+            
         }, 1000);
     });
     
