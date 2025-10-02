@@ -281,27 +281,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('image_details', imageDetails);
             }
             
-            // Submit to Formspree
-            fetch('https://formspree.io/f/xgvnegba', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log('Form submitted successfully!');
-                console.log('Response status:', response.status);
-                if (response.ok) {
-                    console.log('Formspree accepted the submission');
-                } else {
-                    console.error('Formspree rejected the submission:', response.status);
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                alert('There was an error submitting the form. Please try again.');
-            });
+            // Submit via EmailJS
+            const formDataForEmailJS = {
+                name: name,
+                postcode: postcode,
+                contact: contact,
+                details: details,
+                images: uploadedImages
+            };
+            
+            submitFormViaEmailJS(formDataForEmailJS)
+                .then(result => {
+                    if (result.success) {
+                        console.log('Email sent successfully via EmailJS');
+                    } else {
+                        console.error('EmailJS submission failed:', result.message);
+                        alert('There was an error submitting the form. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    alert('There was an error submitting the form. Please try again.');
+                });
         }, 1000);
     });
     
