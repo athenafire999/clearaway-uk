@@ -1,37 +1,5 @@
-// EmailJS Setup for ClearAway UK
-// This file contains the EmailJS configuration and form handling
-
-// Initialize EmailJS with your public key
-(function() {
-    emailjs.init("cQSyErTmi14cOXyvR");
-    console.log('EmailJS initialized with public key: cQSyErTmi14cOXyvR');
-})();
-
-// Test function to verify EmailJS is working
-function testEmailJS() {
-    console.log('Testing EmailJS...');
-    const testParams = {
-        from_name: 'Test User',
-        from_postcode: 'TEST123',
-        from_contact: 'test@example.com',
-        from_details: 'This is a test message',
-        to_email: 'michaelgaylee@gmail.com',
-        reply_to: 'test@example.com',
-        subject: 'Test Email from ClearAway UK',
-        images_count: 0,
-        images_summary: 'No images uploaded'
-    };
-    
-    console.log('Test params size:', JSON.stringify(testParams).length, 'bytes');
-    
-    emailjs.send('service_e5mrftj', 'template_tcvsili', testParams)
-        .then(function(response) {
-            console.log('EmailJS test successful:', response);
-        })
-        .catch(function(error) {
-            console.error('EmailJS test failed:', error);
-        });
-}
+// ClearAway UK Form Handler - Using Formsubmit.co for all submissions
+// This ensures images are always included in emails
 
 // Formsubmit.co form submission function (handles images perfectly)
 async function submitFormViaFormsubmit(formData) {
