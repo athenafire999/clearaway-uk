@@ -245,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Submit via EmailJS
             console.log('Submitting form via EmailJS...');
+            console.log('EmailJS function available:', typeof submitFormViaEmailJS);
             
             const formDataForEmailJS = {
                 name: name,
@@ -254,7 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 images: uploadedImages
             };
             
-            submitFormViaEmailJS(formDataForEmailJS)
+            if (typeof submitFormViaEmailJS === 'function') {
+                submitFormViaEmailJS(formDataForEmailJS)
                 .then(result => {
                     if (result.success) {
                         console.log('Email sent successfully via EmailJS');
@@ -267,6 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error submitting form:', error);
                     alert('There was an error submitting the form. Please try again.');
                 });
+            } else {
+                console.error('EmailJS function not available!');
+                alert('EmailJS is not properly loaded. Please refresh the page and try again.');
+            }
             
         }, 1000);
     });

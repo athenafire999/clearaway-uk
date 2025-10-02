@@ -8,6 +8,7 @@
 
 // EmailJS form submission function
 async function submitFormViaEmailJS(formData) {
+    console.log('EmailJS function called with data:', formData);
     try {
         // Prepare email template parameters
         const templateParams = {
@@ -23,6 +24,8 @@ async function submitFormViaEmailJS(formData) {
                 `Images uploaded: ${formData.images.map(img => img.name).join(', ')}` : 
                 'No images uploaded'
         };
+
+        console.log('Template params:', templateParams);
 
         // Add image data if any images were uploaded
         if (formData.images.length > 0) {
