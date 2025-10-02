@@ -243,11 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit via EmailJS
-            console.log('Submitting form via EmailJS...');
-            console.log('EmailJS function available:', typeof submitFormViaEmailJS);
+            // Submit via Formsubmit.co (handles images perfectly)
+            console.log('Submitting form via Formsubmit.co...');
             
-            const formDataForEmailJS = {
+            const formDataForFormsubmit = {
                 name: name,
                 postcode: postcode,
                 contact: contact,
@@ -255,13 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 images: uploadedImages
             };
             
-            if (typeof submitFormViaEmailJS === 'function') {
-                submitFormViaEmailJS(formDataForEmailJS)
+            submitFormViaFormsubmit(formDataForFormsubmit)
                 .then(result => {
                     if (result.success) {
-                        console.log('Email sent successfully via EmailJS');
+                        console.log('Email sent successfully via Formsubmit.co');
                     } else {
-                        console.error('EmailJS submission failed:', result.message);
+                        console.error('Formsubmit.co submission failed:', result.message);
                         alert('There was an error submitting the form. Please try again.');
                     }
                 })
@@ -269,10 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error submitting form:', error);
                     alert('There was an error submitting the form. Please try again.');
                 });
-            } else {
-                console.error('EmailJS function not available!');
-                alert('EmailJS is not properly loaded. Please refresh the page and try again.');
-            }
             
         }, 1000);
     });
