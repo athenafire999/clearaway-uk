@@ -64,7 +64,7 @@ async function submitFormViaFormsubmit(formData) {
         
         console.log('Sending form data to Formsubmit.co...');
         
-        const response = await fetch('https://formsubmit.co/el/ramito', {
+        const response = await fetch('https://formsubmit.co/michaelgaylee@gmail.com', {
             method: 'POST',
             body: formDataToSend
         });
@@ -86,4 +86,3 @@ async function submitFormViaFormsubmit(formData) {
 
 // ClearAway UK Form Handler - Using Formsubmit.co for all submissions
 // This ensures images are always included in emails
-

@@ -163,7 +163,19 @@ document.addEventListener('DOMContentLoaded', () => {
         hideError();
         setSubmitting(true);
 
-        // Add images as individual fields for better email formatting
+        // Update the reply-to field with the contact info
+        const replyToField = quoteForm.querySelector('input[name="_replyto"]');
+        if (replyToField) {
+            replyToField.value = contact;
+        }
+        
+        // Update the subject with customer details
+        const subjectField = quoteForm.querySelector('input[name="_subject"]');
+        if (subjectField) {
+            subjectField.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
+        }
+        
+        // Add images as hidden fields for Formsubmit.co
         uploadedImages.forEach((img, index) => {
             const imageField = document.createElement('input');
             imageField.type = 'hidden';
@@ -171,11 +183,11 @@ document.addEventListener('DOMContentLoaded', () => {
             imageField.value = img.name;
             quoteForm.appendChild(imageField);
             
-            const imageSize = document.createElement('input');
-            imageSize.type = 'hidden';
-            imageSize.name = `image_${index + 1}_size`;
-            imageSize.value = `${Math.round(img.base64.length * 0.75 / 1024)}KB`;
-            quoteForm.appendChild(imageSize);
+            const imageDataField = document.createElement('input');
+            imageDataField.type = 'hidden';
+            imageDataField.name = `image_${index + 1}_data`;
+            imageDataField.value = `data:${img.mimeType};base64,${img.base64}`;
+            quoteForm.appendChild(imageDataField);
         });
         
         // Add images summary
@@ -187,53 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'No images uploaded';
         quoteForm.appendChild(imagesSummary);
         
-        // Add HTML formatted images for email
-        if (uploadedImages.length > 0) {
-            const imagesHtml = document.createElement('input');
-            imagesHtml.type = 'hidden';
-            imagesHtml.name = 'images_html';
-            
-            let htmlContent = '<h3>Uploaded Images:</h3>';
-            uploadedImages.forEach((img, index) => {
-                htmlContent += `
-                    <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <h4>Image ${index + 1}: ${img.name}</h4>
-                        <img src="data:${img.mimeType};base64,${img.base64}" 
-                             style="max-width: 300px; max-height: 300px; border: 1px solid #ccc;" 
-                             alt="${img.name}" />
-                        <p><strong>File:</strong> ${img.name}</p>
-                        <p><strong>Size:</strong> ${Math.round(img.base64.length * 0.75 / 1024)}KB</p>
-                    </div>
-                `;
-            });
-            
-            imagesHtml.value = htmlContent;
-            quoteForm.appendChild(imagesHtml);
-        }
-        
-        // Add a hidden input for the subject
-        const subjectInput = document.createElement('input');
-        subjectInput.type = 'hidden';
-        subjectInput.name = '_subject';
-        subjectInput.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
-        quoteForm.appendChild(subjectInput);
-        
-        // Add a hidden input for the reply-to email
-        const replyToInput = document.createElement('input');
-        replyToInput.type = 'hidden';
-        replyToInput.name = '_replyto';
-        replyToInput.value = contact;
-        quoteForm.appendChild(replyToInput);
-        
-        // Add a note about images
-        const imageNoteInput = document.createElement('input');
-        imageNoteInput.type = 'hidden';
-        imageNoteInput.name = 'image_note';
-        imageNoteInput.value = uploadedImages.length > 0 ? 
-            'Note: Image files are included as base64 data in this form submission. You can view them in your email.' : 
-            'No images were uploaded with this request.';
-        quoteForm.appendChild(imageNoteInput);
-        
         // Show success message and let form submit naturally
         setTimeout(() => {
             console.log('Showing success screen and submitting form');
@@ -243,30 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit via Formsubmit.co (handles images perfectly)
-            console.log('Submitting form via Formsubmit.co...');
+            // Submit form naturally to Formsubmit.co (avoids CORS issues)
+            console.log('Submitting form naturally to Formsubmit.co...');
+            console.log('Form action:', quoteForm.action);
+            console.log('Form method:', quoteForm.method);
             
-            const formDataForFormsubmit = {
-                name: name,
-                postcode: postcode,
-                contact: contact,
-                details: details,
-                images: uploadedImages
-            };
-            
-            submitFormViaFormsubmit(formDataForFormsubmit)
-                .then(result => {
-                    if (result.success) {
-                        console.log('Email sent successfully via Formsubmit.co');
-                    } else {
-                        console.error('Formsubmit.co submission failed:', result.message);
-                        alert('There was an error submitting the form. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error);
-                    alert('There was an error submitting the form. Please try again.');
-                });
+            // Let the form submit naturally - this avoids CORS issues
+            quoteForm.submit();
             
         }, 1000);
     });
