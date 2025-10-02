@@ -208,13 +208,32 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-            // Submit form naturally to Formsubmit.co (avoids CORS issues)
-            console.log('Submitting form naturally to Formsubmit.co...');
-            console.log('Form action:', quoteForm.action);
-            console.log('Form method:', quoteForm.method);
-            
-            // Let the form submit naturally - this avoids CORS issues
-            quoteForm.submit();
+        // Simple solution: Open email client with pre-filled email
+        console.log('Opening email client with form data...');
+        
+        // Create email body
+        let emailBody = `New Waste Removal Quote Request\n\n`;
+        emailBody += `Name: ${name}\n`;
+        emailBody += `Postcode: ${postcode}\n`;
+        emailBody += `Contact: ${contact}\n`;
+        emailBody += `Details: ${details}\n\n`;
+        
+        if (uploadedImages.length > 0) {
+            emailBody += `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}\n`;
+            emailBody += `Note: Please attach the images to this email.\n`;
+        } else {
+            emailBody += `No images uploaded.\n`;
+        }
+        
+        // Create mailto link
+        const subject = `New Waste Removal Quote Request - ${name} (${postcode})`;
+        const mailtoLink = `mailto:michaelgaylee@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+        
+        // Open email client
+        window.open(mailtoLink, '_blank');
+        
+        // Show success message
+        alert('Your email client has opened with the form details. Please send the email to complete your quote request.');
             
         }, 1000);
     });
