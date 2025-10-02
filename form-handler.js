@@ -1,7 +1,6 @@
-// ClearAway UK Form Handler - Using Formsubmit.co for all submissions
-// This ensures images are always included in emails
+// ClearAway UK Form Handler - Multiple submission methods for reliability
 
-// Formsubmit.co form submission function (handles images perfectly)
+// Primary: Formsubmit.co form submission function
 async function submitFormViaFormsubmit(formData) {
     console.log('Formsubmit.co function called with data:', formData);
     try {
@@ -52,6 +51,31 @@ async function submitFormViaFormsubmit(formData) {
     }
 }
 
+// Backup: Simple email using mailto link
+function submitFormViaMailto(formData) {
+    console.log('Creating mailto link as backup...');
+    
+    let emailBody = `New Waste Removal Quote Request\n\n`;
+    emailBody += `Name: ${formData.name}\n`;
+    emailBody += `Postcode: ${formData.postcode}\n`;
+    emailBody += `Contact: ${formData.contact}\n`;
+    emailBody += `Details: ${formData.details}\n\n`;
+    
+    if (formData.images.length > 0) {
+        emailBody += `Images uploaded: ${formData.images.map(img => img.name).join(', ')}\n`;
+        emailBody += `Note: Images are attached to this form submission.\n`;
+    } else {
+        emailBody += `No images uploaded.\n`;
+    }
+    
+    const subject = `New Waste Removal Quote Request - ${formData.name} (${formData.postcode})`;
+    const mailtoLink = `mailto:michaelgaylee@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+    
+    // Open mailto link
+    window.open(mailtoLink, '_blank');
+    
+    return { success: true, message: 'Email client opened - please send the email manually.' };
+}
+
 // ClearAway UK Form Handler - Using Formsubmit.co for all submissions
 // This ensures images are always included in emails
-
