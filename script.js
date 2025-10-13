@@ -139,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formError.classList.add('hidden');
     }
 
-    quoteForm.addEventListener('submit', async (event) => {
-        // Don't prevent default - let Formspark handle the submission
+    // Simple form validation only
+    quoteForm.addEventListener('submit', (event) => {
         console.log('Form submit event triggered');
         
         const name = document.getElementById('name').value;
@@ -151,112 +151,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Form data:', { name, postcode, contact, details, imagesCount: uploadedImages.length });
 
         if (!name || !postcode || !contact || !details) {
+            event.preventDefault();
             showError('Please fill in all required fields (Name, Postcode, Contact, and Details).');
             return;
         }
         
-        // Photos are optional, but if none uploaded, show a warning
-        if (uploadedImages.length === 0) {
-            console.log('No photos uploaded, but continuing with form submission');
-        }
-        
         hideError();
-        setSubmitting(true);
+        console.log('Form submitting to Formspark...');
+        // Let the form submit naturally to Formspark
 
-        // Update the reply-to field with the contact info
-        const replyToField = quoteForm.querySelector('input[name="_replyto"]');
-        if (replyToField) {
-            replyToField.value = contact;
-        }
-        
-        // Update the subject with customer details
-        const subjectField = quoteForm.querySelector('input[name="_subject"]');
-        if (subjectField) {
-            subjectField.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
-        }
-        
-        // Add images as hidden fields for Formsubmit.co
-        uploadedImages.forEach((img, index) => {
-            const imageField = document.createElement('input');
-            imageField.type = 'hidden';
-            imageField.name = `image_${index + 1}_name`;
-            imageField.value = img.name;
-            quoteForm.appendChild(imageField);
-            
-            const imageDataField = document.createElement('input');
-            imageDataField.type = 'hidden';
-            imageDataField.name = `image_${index + 1}_data`;
-            imageDataField.value = `data:${img.mimeType};base64,${img.base64}`;
-            quoteForm.appendChild(imageDataField);
-        });
-        
-        // Add images summary
-        const imagesSummary = document.createElement('input');
-        imagesSummary.type = 'hidden';
-        imagesSummary.name = 'images_summary';
-        imagesSummary.value = uploadedImages.length > 0 ? 
-            `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
-            'No images uploaded';
-        quoteForm.appendChild(imagesSummary);
-        
-        // Show success message and let form submit naturally
-        setTimeout(() => {
-            console.log('Showing success screen and submitting form');
-            console.log('Form action URL:', quoteForm.action);
-            console.log('Form method:', quoteForm.method);
-            
-            showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
-            setSubmitting(false);
-            
-        // Update the reply-to field with the contact info
-        const replyToField = quoteForm.querySelector('input[name="_replyto"]');
-        if (replyToField) {
-            replyToField.value = contact;
-        }
-        
-        // Update the subject with customer details
-        const subjectField = quoteForm.querySelector('input[name="_subject"]');
-        if (subjectField) {
-            subjectField.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
-        }
-        
-        // Add images as file inputs for Formspark
-        uploadedImages.forEach((img, index) => {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.name = `image_${index + 1}`;
-            fileInput.style.display = 'none';
-            
-            // Create a File object from base64 data
-            const byteCharacters = atob(img.base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const file = new File([byteArray], img.name, { type: img.mimeType });
-            
-            // Create a DataTransfer object to set the file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            
-            quoteForm.appendChild(fileInput);
-        });
-        
-        // Add images summary
-        const imagesSummary = document.createElement('input');
-        imagesSummary.type = 'hidden';
-        imagesSummary.name = 'images_summary';
-        imagesSummary.value = uploadedImages.length > 0 ? 
-            `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
-            'No images uploaded';
-        quoteForm.appendChild(imagesSummary);
-        
-        // Form will submit naturally to Formspark
-        console.log('Form will submit naturally to Formspark...');
-            
-        }, 1000);
     });
     
     function setSubmitting(isSubmitting) {
