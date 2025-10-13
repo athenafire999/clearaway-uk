@@ -208,32 +208,54 @@ document.addEventListener('DOMContentLoaded', () => {
             showSuccessScreen({ name, postcode, contact, details, images: uploadedImages });
             setSubmitting(false);
             
-        // Simple solution: Open email client with pre-filled email
-        console.log('Opening email client with form data...');
-        
-        // Create email body
-        let emailBody = `New Waste Removal Quote Request\n\n`;
-        emailBody += `Name: ${name}\n`;
-        emailBody += `Postcode: ${postcode}\n`;
-        emailBody += `Contact: ${contact}\n`;
-        emailBody += `Details: ${details}\n\n`;
-        
-        if (uploadedImages.length > 0) {
-            emailBody += `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}\n`;
-            emailBody += `Note: Please attach the images to this email.\n`;
-        } else {
-            emailBody += `No images uploaded.\n`;
+        // Update the reply-to field with the contact info
+        const replyToField = quoteForm.querySelector('input[name="_replyto"]');
+        if (replyToField) {
+            replyToField.value = contact;
         }
         
-        // Create mailto link
-        const subject = `New Waste Removal Quote Request - ${name} (${postcode})`;
-        const mailtoLink = `mailto:michaelgaylee@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+        // Update the subject with customer details
+        const subjectField = quoteForm.querySelector('input[name="_subject"]');
+        if (subjectField) {
+            subjectField.value = `New Waste Removal Quote Request - ${name} (${postcode})`;
+        }
         
-        // Open email client
-        window.open(mailtoLink, '_blank');
+        // Add images as file inputs for Formspark
+        uploadedImages.forEach((img, index) => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = `image_${index + 1}`;
+            fileInput.style.display = 'none';
+            
+            // Create a File object from base64 data
+            const byteCharacters = atob(img.base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const file = new File([byteArray], img.name, { type: img.mimeType });
+            
+            // Create a DataTransfer object to set the file
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            
+            quoteForm.appendChild(fileInput);
+        });
         
-        // Show success message
-        alert('Your email client has opened with the form details. Please send the email to complete your quote request.');
+        // Add images summary
+        const imagesSummary = document.createElement('input');
+        imagesSummary.type = 'hidden';
+        imagesSummary.name = 'images_summary';
+        imagesSummary.value = uploadedImages.length > 0 ? 
+            `Images uploaded: ${uploadedImages.map(img => img.name).join(', ')}` : 
+            'No images uploaded';
+        quoteForm.appendChild(imagesSummary);
+        
+        // Submit form to Formspark
+        console.log('Submitting form to Formspark...');
+        quoteForm.submit();
             
         }, 1000);
     });
