@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     quoteForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+        // Don't prevent default - let Formspark handle the submission
         console.log('Form submit event triggered');
         
         const name = document.getElementById('name').value;
@@ -253,9 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'No images uploaded';
         quoteForm.appendChild(imagesSummary);
         
-        // Submit form to Formspark
-        console.log('Submitting form to Formspark...');
-        quoteForm.submit();
+        // Form will submit naturally to Formspark
+        console.log('Form will submit naturally to Formspark...');
             
         }, 1000);
     });
