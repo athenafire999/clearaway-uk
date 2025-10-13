@@ -139,28 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formError.classList.add('hidden');
     }
 
-    // Simple form validation only
-    quoteForm.addEventListener('submit', (event) => {
-        console.log('Form submit event triggered');
-        
-        const name = document.getElementById('name').value;
-        const postcode = document.getElementById('postcode').value;
-        const contact = document.getElementById('contact').value;
-        const details = document.getElementById('details').value;
-
-        console.log('Form data:', { name, postcode, contact, details, imagesCount: uploadedImages.length });
-
-        if (!name || !postcode || !contact || !details) {
-            event.preventDefault();
-            showError('Please fill in all required fields (Name, Postcode, Contact, and Details).');
-            return;
-        }
-        
-        hideError();
-        console.log('Form submitting to Formspark...');
-        // Let the form submit naturally to Formspark
-
-    });
+    // Remove all form submission handling - let Formspark handle everything
+    // The form will submit naturally without any JavaScript interference
     
     function setSubmitting(isSubmitting) {
         submitButton.disabled = isSubmitting;
