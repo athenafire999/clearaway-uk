@@ -122,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Send to Formsubmit.co
-            // REPLACE 'michaelgaylee@gmail.com' WITH YOUR REAL EMAIL IF DIFFERENT
-            const response = await fetch('https://formsubmit.co/michaelgaylee@gmail.com', {
+            // Using activation token instead of email address
+            const response = await fetch('https://formsubmit.co/745d16c01aaf3ebede23377a5f22ab76', {
                 method: 'POST',
                 body: formData
             });
