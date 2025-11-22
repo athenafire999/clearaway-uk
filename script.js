@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navButtons['page-service-area'].addEventListener('click', () => navigateTo('page-service-area'));
     navButtons['page-contact'].addEventListener('click', () => navigateTo('page-contact'));
 
-    // --- QUOTE FORM ---
+    // --- QUOTE FORM HANDLING ---
     const quoteFormContainer = document.getElementById('quote-form-container');
     const quoteResultContainer = document.getElementById('quote-result-container');
     const quoteForm = document.getElementById('quote-form');
@@ -34,104 +34,134 @@ document.addEventListener('DOMContentLoaded', () => {
     const formError = document.getElementById('form-error');
     const resetButton = document.getElementById('reset-button');
     const submittedDataSummary = document.getElementById('submitted-data-summary');
-    
-    let uploadedImages = []; // Array to store { base64, mimeType, name }
 
+    // Store actual file objects here
+    let uploadedFiles = []; 
+
+    // 1. Handle File Selection
     fileInput.addEventListener('change', (event) => {
-        const files = event.target.files;
-        if (!files) return;
+        const files = Array.from(event.target.files);
+        if (!files.length) return;
 
         let currentErrors = [];
-        const newImagesPromises = [];
         
-        Array.from(files).forEach(file => {
-            if (uploadedImages.some(img => img.name === file.name)) {
-                return; // Skip already added files
-            }
-
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                currentErrors.push(`'${file.name}' is too large (max 10MB).`);
+        files.forEach(file => {
+            // Check duplicates
+            if (uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
                 return;
             }
-
-            const promise = new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64String = reader.result?.toString().split(',')[1] || null;
-                    resolve({ base64: base64String, mimeType: file.type, name: file.name });
-                };
-                reader.onerror = (error) => reject(`Failed to read file: ${file.name}`);
-                reader.readAsDataURL(file);
-            });
-            newImagesPromises.push(promise);
+            // Check size (5MB limit for email reliability)
+            if (file.size > 5 * 1024 * 1024) {
+                currentErrors.push(`${file.name} is too large (max 5MB).`);
+                return;
+            }
+            uploadedFiles.push(file);
         });
         
-        if (currentErrors.length > 0) {
-            showError(currentErrors.join(' '));
-        } else {
-            hideError();
-        }
+        if (currentErrors.length > 0) showError(currentErrors.join(' '));
+        else hideError();
 
-        Promise.all(newImagesPromises)
-            .then(resolvedImages => {
-                uploadedImages = [...uploadedImages, ...resolvedImages];
-                renderImagePreviews();
-            })
-            .catch(err => {
-                showError(typeof err === 'string' ? err : 'An unknown error occurred during file processing.');
-            });
+        renderImagePreviews();
         
-        // Reset file input to allow re-uploading the same file
-        event.target.value = '';
+        // Reset input so same file can be selected again if deleted
+        event.target.value = ''; 
     });
 
-    function updateUploadButtonText() {
-        const uploadLabel = document.querySelector('label[for="file-upload"] span');
-        if (uploadedImages.length > 0) {
-            uploadLabel.textContent = `${uploadedImages.length} file${uploadedImages.length > 1 ? 's' : ''} selected`;
-        } else {
-            uploadLabel.textContent = 'Upload files';
-        }
-    }
-
+    // 2. Render Previews
     function renderImagePreviews() {
         imagePreviewList.innerHTML = '';
-        updateUploadButtonText(); // Update button text
+        const labelSpan = document.querySelector('label[for="file-upload"] span');
         
-        if(uploadedImages.length > 0) {
-          const header = document.createElement('h3');
-          header.className = 'text-sm font-medium text-gray-800';
-          header.textContent = 'Selected files:';
-          const list = document.createElement('ul');
-          list.className = 'space-y-2';
-          
-          uploadedImages.forEach((image, index) => {
-              const listItem = document.createElement('li');
-              listItem.className = 'flex items-center justify-between text-sm text-gray-700 bg-gray-100 p-2 rounded-lg border border-gray-200';
-              listItem.innerHTML = `
-                  <span class="truncate flex-grow">${image.name}</span>
-                  <button type="button" data-index="${index}" class="remove-image-btn ml-4 flex-shrink-0 text-red-600 hover:text-red-800 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded" aria-label="Remove ${image.name}">
-                      Remove
-                  </button>
-              `;
-              list.appendChild(listItem);
-          });
-
-          imagePreviewList.appendChild(header);
-          imagePreviewList.appendChild(list);
+        if (uploadedFiles.length > 0) {
+            labelSpan.textContent = `${uploadedFiles.length} file(s) selected`;
+            
+            const list = document.createElement('ul');
+            list.className = 'space-y-2';
+            
+            uploadedFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between text-sm text-gray-700 bg-gray-100 p-2 rounded-lg';
+                li.innerHTML = `
+                    <span class="truncate">${file.name}</span>
+                    <button type="button" class="text-red-500 hover:text-red-700 font-bold ml-2" onclick="removeFile(${index})">
+                        ✕
+                    </button>
+                `;
+                list.appendChild(li);
+            });
+            imagePreviewList.appendChild(list);
+        } else {
+            labelSpan.textContent = 'Upload files';
         }
     }
 
-    imagePreviewList.addEventListener('click', (event) => {
-        if (event.target.classList.contains('remove-image-btn')) {
-            const indexToRemove = parseInt(event.target.getAttribute('data-index'), 10);
-            uploadedImages = uploadedImages.filter((_, index) => index !== indexToRemove);
-            renderImagePreviews();
+    // 3. Remove File Function (needs to be global or attached to window)
+    window.removeFile = function(index) {
+        uploadedFiles.splice(index, 1);
+        renderImagePreviews();
+    };
+
+    // 4. Handle Form Submission
+    quoteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
+
+        // Change button state
+        const originalBtnText = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Sending...`;
+
+        // Create FormData
+        const formData = new FormData(quoteForm);
+        
+        // Append the images from our array to the FormData
+        uploadedFiles.forEach((file, index) => {
+            // We append them as 'attachment1', 'attachment2', etc.
+            formData.append(`attachment_${index + 1}`, file);
+        });
+
+        try {
+            // Send to Formsubmit.co
+            // REPLACE 'michaelgaylee@gmail.com' WITH YOUR REAL EMAIL IF DIFFERENT
+            const response = await fetch('https://formsubmit.co/michaelgaylee@gmail.com', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                showSuccessScreen({
+                    name: formData.get('name'),
+                    postcode: formData.get('postcode'),
+                    contact: formData.get('email'),
+                    details: formData.get('message'),
+                    imageCount: uploadedFiles.length
+                });
+            } else {
+                throw new Error('Submission failed');
+            }
+        } catch (error) {
+            console.error(error);
+            showError("There was a problem sending your quote. Please try again or call us directly.");
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalBtnText;
         }
     });
-    
-    function showError(message) {
-        formError.textContent = message;
+
+    function showSuccessScreen(data) {
+        submittedDataSummary.innerHTML = `
+            <h3 class="font-bold text-lg text-gray-800">Details Sent:</h3>
+            <p><span class="font-semibold">Name:</span> ${data.name}</p>
+            <p><span class="font-semibold">Postcode:</span> ${data.postcode}</p>
+            <p><span class="font-semibold">Contact:</span> ${data.contact}</p>
+            <p><span class="font-semibold">Images:</span> ${data.imageCount} uploaded</p>
+        `;
+        quoteFormContainer.classList.add('hidden');
+        quoteResultContainer.classList.remove('hidden');
+        window.scrollTo(0, 0);
+    }
+
+    function showError(msg) {
+        formError.textContent = msg;
         formError.classList.remove('hidden');
     }
 
@@ -139,44 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
         formError.classList.add('hidden');
     }
 
-    // Remove all form submission handling - let Formspark handle everything
-    // The form will submit naturally without any JavaScript interference
-    
-    function setSubmitting(isSubmitting) {
-        submitButton.disabled = isSubmitting;
-        if (isSubmitting) {
-            submitButton.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Sending...
-            `;
-        } else {
-            submitButton.innerHTML = 'Get My Quote';
-        }
-    }
-    
-    function showSuccessScreen(formData) {
-        submittedDataSummary.innerHTML = `
-          <h3 class="font-bold text-lg text-gray-800">Your Submitted Details:</h3>
-          <p><span class="font-semibold">Name:</span> ${formData.name || 'N/A'}</p>
-          <p><span class="font-semibold">Postcode:</span> ${formData.postcode}</p>
-          <p><span class="font-semibold">Contact:</span> ${formData.contact}</p>
-          <p><span class="font-semibold">Details:</span> ${formData.details}</p>
-          <p><span class="font-semibold">Images Uploaded:</span> ${formData.images.length}</p>
-        `;
-        document.getElementById('hero-section').classList.add('hidden');
-        quoteFormContainer.classList.add('hidden');
-        quoteResultContainer.classList.remove('hidden');
-    }
-
     resetButton.addEventListener('click', () => {
         quoteForm.reset();
-        uploadedImages = [];
+        uploadedFiles = [];
         renderImagePreviews();
-        hideError();
-        document.getElementById('hero-section').classList.remove('hidden');
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Get My Quote';
         quoteResultContainer.classList.add('hidden');
         quoteFormContainer.classList.remove('hidden');
     });
